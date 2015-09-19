@@ -109,6 +109,8 @@
     <!-- Strings related to Notification preference -->
     <string name="pref_last_notification">last_notification</string>
 
-    <string name="empty_list_message">No weather information available</string>
+    <string name="empty_list_message">No weather information available.</string>
+
+    <string name="no_forecast_data_offline">No weather information available. The network is not available to fetch weather data.</string>
 
 </resources>
