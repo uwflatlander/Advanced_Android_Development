@@ -15,10 +15,8 @@
  */
 package com.example.android.sunshine.app;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -254,29 +252,31 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mForecastAdapter.swapCursor(data);
-        if(data.getCount() == 0)
-        {
-            ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-            if(!connectivityManager.isActiveNetworkMetered())
-            {
-                mEmptyView.setText(getActivity().getString(R.string.no_forecast_data_offline));
-            }
-            else
-            {
-                mEmptyView.setText(getActivity().getString(R.string.empty_list_message));
-            }
-            return;
-        }
         if (mPosition != ListView.INVALID_POSITION) {
             // If we don't need to restart the loader, and there's a desired position to restore
             // to, do so now.
             mListView.smoothScrollToPosition(mPosition);
         }
+        updateEmptyView();
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mForecastAdapter.swapCursor(null);
+    }
+
+    private void updateEmptyView()
+    {
+        if(mEmptyView == null) return;
+        if(mForecastAdapter.getCount() == 0)
+        {
+            int message = R.string.empty_list_message;
+            if(Utility.isNetworkAvailable(getActivity()))
+            {
+                message = R.string.no_forecast_data_offline;
+            }
+            mEmptyView.setText(message);
+        }
     }
 
     public void setUseTodayLayout(boolean useTodayLayout) {
