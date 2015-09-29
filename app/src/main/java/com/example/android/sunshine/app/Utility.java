@@ -272,6 +272,6 @@ public class Utility {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(context.getString(R.string.pref_sync_status_key), SunshineSyncAdapter.LOCATION_STATUS_SERVER_UNKNOWN);
-        editor.commit();
+        editor.apply();
     }
 }
