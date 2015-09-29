@@ -1,12 +1,16 @@
 package com.example.android.sunshine.app;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Bundle;
 import android.preference.EditTextPreference;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 /**
  * Created by Tim on 9/28/2015.
@@ -17,9 +21,38 @@ public class LocationEditTextPreference extends EditTextPreference {
     private static final int DEFAULT_MIN_LOCATION_LENGTH = 2;
 
     @Override
-    protected View onCreateView(ViewGroup parent) {
-        Log.v(LOG_TAG, "Min length: " + mMinLength);
-        return super.onCreateView(parent);
+    protected void showDialog(Bundle state) {
+        super.showDialog(state);
+
+        EditText editText = getEditText();
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Dialog dialog = getDialog();
+                if (dialog instanceof AlertDialog) {
+                    AlertDialog alertDialog = (AlertDialog) dialog;
+                    Button okButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                    if(s.length() < mMinLength)
+                    {
+                        okButton.setEnabled(false);
+                    }
+                    else
+                    {
+                        okButton.setEnabled(true);
+                    }
+                }
+            }
+        });
     }
 
     public LocationEditTextPreference(Context context, AttributeSet attributeSet)
