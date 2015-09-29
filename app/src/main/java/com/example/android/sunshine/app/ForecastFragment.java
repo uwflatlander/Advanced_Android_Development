@@ -300,27 +300,28 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         if(mEmptyView == null) return;
         if(mForecastAdapter.getCount() == 0)
         {
+            Context context = getActivity();
             int message = R.string.empty_forecast_list_general;
-            if(!Utility.isNetworkAvailable(getActivity()))
-            {
-                message = R.string.empty_forecast_list_network_offline;
-            } else {
-                Context context = getActivity();
-                @SunshineSyncAdapter.LocationStatus int status = Utility.getLocationStatus(context);
-                Log.v(LOG_TAG, "LocationStatus: " + status);
-                switch (status)
-                {
-                    case SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN:
-                        message = R.string.empty_forecast_list_server_down;
-                        break;
 
-                    case SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID:
-                        message = R.string.empty_forecast_list_server_error;
-                        break;
+            @SunshineSyncAdapter.LocationStatus int status = Utility.getLocationStatus(context);
+            Log.v(LOG_TAG, "LocationStatus: " + status);
+            switch (status) {
+                case SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN:
+                    message = R.string.empty_forecast_list_server_down;
+                    break;
 
-                    default:
-                        message = R.string.empty_forecast_list_general;
-                }
+                case SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID:
+                    message = R.string.empty_forecast_list_server_error;
+                    break;
+
+                case SunshineSyncAdapter.LOCATION_STATUS_INVALID:
+                    message = R.string.empty_forecast_list_invalid_location;
+                    break;
+
+                default:
+                    if (!Utility.isNetworkAvailable(context)) {
+                        message = R.string.empty_forecast_list_network_offline;
+                    }
             }
             mEmptyView.setText(message);
         }

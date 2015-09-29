@@ -259,10 +259,19 @@ public class Utility {
         return networkInfo != null && networkInfo.isAvailable();
     }
 
+    @SuppressWarnings("ResourceType")
     static public @SunshineSyncAdapter.LocationStatus int getLocationStatus(Context context)
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         int status = preferences.getInt(context.getString(R.string.pref_sync_status_key),SunshineSyncAdapter.LOCATION_STATUS_SERVER_UNKNOWN);
         return status;
+    }
+
+    static public void resetLocationStatus(Context context)
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(context.getString(R.string.pref_sync_status_key), SunshineSyncAdapter.LOCATION_STATUS_SERVER_UNKNOWN);
+        editor.commit();
     }
 }
