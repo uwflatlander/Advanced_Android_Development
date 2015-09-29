@@ -15,10 +15,13 @@
  */
 package com.example.android.sunshine.app;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -35,11 +38,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.android.sunshine.app.data.WeatherContract;
+import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 
 /**
  * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.
  */
-public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String LOG_TAG = ForecastFragment.class.getSimpleName();
     private ForecastAdapter mForecastAdapter;
 
@@ -47,6 +51,22 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private int mPosition = ListView.INVALID_POSITION;
     private boolean mUseTodayLayout;
     private TextView mEmptyView;
+
+    @Override
+    public void onPause() {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        super.onResume();
+    }
 
     private static final String SELECTED_KEY = "selected_position";
 
@@ -82,6 +102,16 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COL_WEATHER_CONDITION_ID = 6;
     static final int COL_COORD_LAT = 7;
     static final int COL_COORD_LONG = 8;
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.v(LOG_TAG, "Pref Updated: " + key);
+        if(key.equals(getActivity().getString(R.string.pref_sync_status_key)))
+        {
+            Log.v(LOG_TAG, "Updating empty view");
+            updateEmptyView();
+        }
+    }
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -270,10 +300,27 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         if(mEmptyView == null) return;
         if(mForecastAdapter.getCount() == 0)
         {
-            int message = R.string.empty_list_message;
-            if(Utility.isNetworkAvailable(getActivity()))
+            int message = R.string.empty_forecast_list_general;
+            if(!Utility.isNetworkAvailable(getActivity()))
             {
-                message = R.string.no_forecast_data_offline;
+                message = R.string.empty_forecast_list_network_offline;
+            } else {
+                Context context = getActivity();
+                @SunshineSyncAdapter.LocationStatus int status = Utility.getLocationStatus(context);
+                Log.v(LOG_TAG, "LocationStatus: " + status);
+                switch (status)
+                {
+                    case SunshineSyncAdapter.LOCATION_STATUS_SERVER_DOWN:
+                        message = R.string.empty_forecast_list_server_down;
+                        break;
+
+                    case SunshineSyncAdapter.LOCATION_STATUS_SERVER_INVALID:
+                        message = R.string.empty_forecast_list_server_error;
+                        break;
+
+                    default:
+                        message = R.string.empty_forecast_list_general;
+                }
             }
             mEmptyView.setText(message);
         }

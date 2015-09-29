@@ -105,7 +105,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             // Possible parameters are avaiable at OWM's forecast API page, at
             // http://openweathermap.org/API#forecast
             final String FORECAST_BASE_URL =
-                    "http://api.openweathermap.org/data/2.5/forecast/daily?";
+                    "http://google.com/?";
             final String QUERY_PARAM = "q";
             final String FORMAT_PARAM = "mode";
             final String UNITS_PARAM = "units";
@@ -557,5 +557,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putInt(context.getString(R.string.pref_sync_status_key), status);
         editor.commit();
+
+        Log.v(LOG_TAG, "setLocationStatus: " + status);
     }
 }
