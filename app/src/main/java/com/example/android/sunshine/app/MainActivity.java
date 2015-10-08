@@ -221,6 +221,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             Log.i(LOG_TAG, "App version changed.");
             return "";
         }
+
         return registrationId;
     }
 
