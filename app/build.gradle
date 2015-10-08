@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+def SUNSHINE_PROJECT_ID = '"' + SunshineProjectID + '"' ?: '"Missing The Project ID"';
+def SUNSHINE_PROJECT_NUMBER = '"' + SunshineProjectNumber + '"' ?: '"Missing The Project NUMBER"';
+def GCM_API_KEY = '"' + SunshineGCMAPIKey + '"' ?: '"Missing The GCM API Key"';
+
+
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
@@ -12,6 +17,11 @@ android {
         versionName "1.0"
     }
     buildTypes {
+        all {
+            buildConfigField 'String', 'SUNSHINE_PROJECT_ID', SUNSHINE_PROJECT_ID
+            buildConfigField 'String', 'SUNSHINE_PROJECT_NUMBER', SUNSHINE_PROJECT_NUMBER
+            buildConfigField 'String', 'GCM_API_KEY', GCM_API_KEY
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
