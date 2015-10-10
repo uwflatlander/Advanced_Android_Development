@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 def SUNSHINE_PROJECT_ID = '"' + SunshineProjectID + '"' ?: '"Missing The Project ID"';
 def SUNSHINE_PROJECT_NUMBER = '"' + SunshineProjectNumber + '"' ?: '"Missing The Project NUMBER"';
 def GCM_API_KEY = '"' + SunshineGCMAPIKey + '"' ?: '"Missing The GCM API Key"';
+def OPEN_WEATHER_MAP_API_KEY = '"' + OpenWeatherMapAPIKey + '"' ?: '"Missing The Open Weather Map API Key"'
 
 
 android {
@@ -21,6 +22,7 @@ android {
             buildConfigField 'String', 'SUNSHINE_PROJECT_ID', SUNSHINE_PROJECT_ID
             buildConfigField 'String', 'SUNSHINE_PROJECT_NUMBER', SUNSHINE_PROJECT_NUMBER
             buildConfigField 'String', 'GCM_API_KEY', GCM_API_KEY
+            buildConfigField 'String', 'OPEN_WEATHER_MAP_API_KEY', OPEN_WEATHER_MAP_API_KEY
         }
         release {
             minifyEnabled false
